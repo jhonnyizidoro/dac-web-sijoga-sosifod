@@ -1,0 +1,96 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    
+<ui:composition template="/templates/main.xhtml">
+    <ui:define name="content">
+        <nav class="navbar">
+            <div class="container navbar__container">
+                <h:link styleClass="navbar__image__link" outcome="intimations">
+                    <h:graphicImage styleClass="navbar__image" library="images" name="logo-simple.svg" />
+                </h:link>
+                <div class="navbar__links">
+                    <span class="navbar__link" data-target="intimation">NOVA INTIMAÇÃO</span>
+                    <span class="navbar__link" data-target="officer">CADASTRAR OFICIAL DE JUSTIÇA</span>
+                    <h:link styleClass="navbar__link" outcome="index">SAIR</h:link>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="container">
+            <table class="table">
+                <tr class="table__row">
+                    <td class="table__cell">
+			<strong class="table__strong">Data</strong>
+                    </td>
+                    <td class="table__cell">
+                        <strong class="table__strong">Intimado</strong>
+                    </td>
+                    <td class="table__cell">
+			<strong class="table__strong">Oficial de justiça</strong>
+                    </td>
+                    <td class="table__cell">
+			<strong class="table__strong">Origem</strong>
+                    </td>
+                    <td class="table__cell">
+			<strong class="table__strong">Ações</strong>
+                    </td>
+		</tr>
+                <ui:repeat value="#{intimationsMB.intimations}" var="intimation">
+                    <tr class="table__row">
+                        <td class="table__cell">
+                            <span class="table__text">#{intimation.createdAt}</span>
+                        </td>
+                        <td class="table__cell">
+                            <span class="table__text">#{intimation.name}</span>
+                        </td>
+                        <td class="table__cell">
+                            <span class="table__text">#{intimation.officer.name}</span>
+                        </td>
+                        <td class="table__cell">
+                            <span class="table__text">#{intimation.origin == 0 ? "SOSIFOD" : "SIJOGA"}</span>
+                        </td>
+                        <td class="table__cell">
+                            <h:form styleClass="table__link">
+                                <h:commandLink action="#{intimationsMB.concludeIntimation(intimation)}" value="concluir" />
+                            </h:form>
+                        </td>
+                    </tr>
+                </ui:repeat>
+            </table>
+        </div>
+        
+        <div class="modal" id="intimation">
+            <span class="modal__close">FECHAR</span>
+            <div class="modal__content">
+                <h:form styleClass="default">
+                    <h:inputText styleClass="default__input" a:placeholder="CPF" a:required="true" value="#{intimationsMB.intimation.cpf}" a:data-mask="000.000.000-00" />
+                    <h:inputText styleClass="default__input" a:placeholder="NOME" a:required="true" value="#{intimationsMB.intimation.name}" />
+                    <h:inputText styleClass="default__input" a:placeholder="ENDEREÇO" a:required="true" value="#{intimationsMB.intimation.address}" />
+                    <h:inputText styleClass="default__input" a:placeholder="PROCESSO" a:required="true" value="#{intimationsMB.intimation.lawsuit}" />
+                    <h:selectOneMenu styleClass="default__select" a:required="true" value="#{intimationsMB.intimation.officer}" converter="userConverter">
+                        <f:selectItem itemLabel="OFICIAL DE JUSTIÇA" itemValue="" />
+                        <f:selectItems value="#{intimationsMB.officers}" var="officer" itemLabel="#{officer.name}" itemValue="#{officer}" />
+                    </h:selectOneMenu>
+                    <h:commandButton styleClass="button" value="SALVAR INTIMAÇÃO" action="#{intimationsMB.insertIntimation}" />
+		</h:form>
+            </div>
+        </div>
+        
+        <div class="modal" id="officer">
+            <span class="modal__close">FECHAR</span>
+            <div class="modal__content">
+		<h:form styleClass="default">
+                    <h:inputText styleClass="default__input" a:placeholder="NOME" a:required="true" value="#{intimationsMB.officer.name}" />
+                    <h:inputText styleClass="default__input" a:placeholder="CPF" a:required="true" value="#{intimationsMB.officer.cpf}" a:data-mask="000.000.000-00" />
+                    <h:inputText styleClass="default__input" a:placeholder="EMAIL" a:required="true" value="#{intimationsMB.officer.email}" />
+                    <h:commandButton styleClass="button" value="CADASTRAR OFICIAL DE JUSTIÇA" action="#{intimationsMB.insertOfficer}" />
+		</h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+    
+</html>
