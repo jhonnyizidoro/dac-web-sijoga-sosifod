@@ -2,12 +2,16 @@ package mb;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import model.User;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import util.HibernateUtil;
+import util.SessionUtil;
 
 @Named
 @SessionScoped
@@ -33,6 +37,7 @@ public class LoginMB implements Serializable {
         session.getTransaction().commit();
         if (userExists) {
             this.user = users.get(0);
+            SessionUtil.setItem("user", this.user);
             return "lawsuits";
         } else {
             return "index";

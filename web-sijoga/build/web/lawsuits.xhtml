@@ -59,7 +59,9 @@
                             <span class="table__text">#{lawsuit.phases}</span>
 			</td>
 			<td class="table__cell">
-                            <a class="table__link" href="/views/lawsuit.html">visualizar</a>
+                            <h:form styleClass="table__link">
+                                <h:commandLink action="#{lawsuitMB.show(lawsuit)}" value="visualizar" />
+                            </h:form>
 			</td>
                     </tr>
                 </ui:repeat>

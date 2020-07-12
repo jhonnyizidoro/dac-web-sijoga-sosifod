@@ -2,15 +2,15 @@ package mb;
 
 import java.util.Date;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
-import javax.annotation.PostConstruct;
-import javax.faces.context.FacesContext;
 import model.Lawsuit;
 import model.User;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import util.HibernateUtil;
+import util.SessionUtil;
 
 @Named
 @RequestScoped
@@ -73,9 +73,24 @@ public class LawsuitsMB {
     }
     
     public void insertLawsuit() {
-//        System.out.println(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user"));
-//        this.Lawsuit.setCreatedAt(new Date());
-//        this.Lawsuit.setPromotingLawier((User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("authenticatedUser"));
+        User promotingLawier = (User) SessionUtil.getItem("user");
+        this.Lawsuit.setPromotingLawier(promotingLawier);
+        this.Lawsuit.setCreatedAt(new Date());
+        
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        Query promotedLawierQuery = session.createQuery("FROM User WHERE profile = 2 AND id <> :id");
+        Query judgeQuery = session.createQuery("FROM User WHERE profile = 3");
+        promotedLawierQuery.setParameter("id", promotingLawier.getId());
+        
+        User promotedLawier = (User) promotedLawierQuery.list().get(0);
+        User judge = (User) judgeQuery.list().get(0);
+        this.Lawsuit.setPromotedLawier(promotedLawier);
+        this.Lawsuit.setJudge(judge);
+        
+        session.save(this.Lawsuit);
+        session.getTransaction().commit();
+        
     }
     
 }

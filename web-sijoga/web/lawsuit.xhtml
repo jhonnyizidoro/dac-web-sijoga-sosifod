@@ -1,0 +1,152 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    
+<ui:composition template="/templates/main.xhtml">
+    <ui:define name="content">
+        
+        <ui:include src="includes/navbar.xhtml"/>
+        
+        <div class="container">
+            
+            <div class="lawsuit">
+                <div class="lawsuit__title">Processo #123456</div>
+                <div class="lawsuit__row">
+                    <div class="lawsuit__column">
+                        <strong class="lawsuit__text__strong">Promovente:</strong>
+                        <span class="lawsuit__text__muted">#{lawsuitMB.lawsuit.promoting.name}</span>
+                    </div>
+                    <div class="lawsuit__column">
+                        <strong class="lawsuit__text__strong">Advogado do promovente:</strong>
+                        <span class="lawsuit__text__muted">#{lawsuitMB.lawsuit.promotingLawier.name}</span>
+                    </div>
+                </div>
+                <div class="lawsuit__row">
+                    <div class="lawsuit__column">
+                        <strong class="lawsuit__text__strong">Promovido:</strong>
+                        <span class="lawsuit__text__muted">#{lawsuitMB.lawsuit.promoted.name}</span>
+                    </div>
+                    <div class="lawsuit__column">
+                        <strong class="lawsuit__text__strong">Advogado do promovido:</strong>
+                        <span class="lawsuit__text__muted">#{lawsuitMB.lawsuit.promotedLawier.name}</span>
+                    </div>
+                </div>
+                <div class="lawsuit__row">
+                    <div class="lawsuit__column">
+			<strong class="lawsuit__text__strong">Juiz:</strong>
+                        <span class="lawsuit__text__muted">#{lawsuitMB.lawsuit.judge.name}</span>
+                    </div>
+                    <div class="lawsuit__column">
+			<strong class="lawsuit__text__strong">Status:</strong>
+			<span class="lawsuit__text__muted">Aguardando movimentação</span>
+                    </div>
+		</div>
+                <div class="lawsuit__row">
+                    <div class="lawsuit__column">
+                        <strong class="lawsuit__text__strong">Ações:</strong>
+                        <a class="lawsuit__link" href="#">aceitar pedido</a>
+                        <span class="lawsuit__link" data-target="deny">negar pedido</span>
+                        <span class="lawsuit__link" data-target="intimation">realizar uma intimação</span>
+                        <span class="lawsuit__link" data-target="close">encerrar processo</span>
+                        <span class="lawsuit__link" data-target="phase">nova fase</span>
+                    </div>
+		</div>
+            </div>
+            
+            
+            <div class="lawsuit">
+		<div class="lawsuit__title">Histórico</div>
+                <ui:repeat value="#{lawsuitMB.lawsuit.phases}" var="phase">
+                    <div class="lawsuit__block">
+                        <div class="lawsuit__subtitle">#{phase.title}</div>
+                        <div class="lawsuit__row">
+                            <div class="lawsuit__column">
+                                <strong class="lawsuit__text__strong">Data:</strong>
+                                <span class="lawsuit__text__muted">#{phase.createdAt}</span>
+                            </div>
+                            <div class="lawsuit__column">
+                                <strong class="lawsuit__text__strong">Aberto por:</strong>
+                                <span class="lawsuit__text__muted">#{phase.user.name}</span>
+                            </div>
+                            <div class="lawsuit__column">
+                                <strong class="lawsuit__text__strong">Anexo:</strong>
+                                <span class="lawsuit__link">visualizar</span>
+                            </div>
+                            <div class="lawsuit__column">
+                                <strong class="lawsuit__text__strong">Tipo:</strong>
+                                <span class="lawsuit__text__muted">deliberativa #{phase.type}</span>
+                                <c:set var="type" value="#{phase.type}"/>
+                                <span class="icon icon--warning"></span>
+                            </div>
+                        </div>
+                        <div class="lawsuit__justification">#{phase.description}</div>
+                    </div>
+                </ui:repeat>
+            </div>
+            
+            <div class="modal" id="deny">
+                <span class="modal__close">FECHAR</span>
+                <div class="modal__content">
+                    <h:form styleClass="default">
+			<h:inputTextarea styleClass="default__textarea" a:placeholder="JUSTIFICATIVA" a:required="true"></h:inputTextarea>
+                        <h:commandButton styleClass="button button--primary" action="deny" value="NEGAR PEDIDO" />
+                    </h:form>
+                </div>
+            </div>
+            
+            <div class="modal" id="intimation">
+                <span class="modal__close">FECHAR</span>
+                <div class="modal__content">
+                    <h:form styleClass="default">
+			<h:inputText styleClass="default__input" a:placeholder="NOME" a:required="true" />
+			<h:inputText styleClass="default__input" a:placeholder="CPF" a:required="true" a:data-mask="000.000.000-00" />
+			<h:inputText styleClass="default__input" a:placeholder="ENDEREÇO" a:required="true" />
+			<h:selectOneMenu styleClass="default__select" a:required="true">
+                            <f:selectItem itemValue="" itemLabel="OFICIAL DE JUSTIÇA"/>
+			</h:selectOneMenu>
+                        <h:commandButton styleClass="button button--primary" action="intimate" value="REALIZAR INTIMAÇÃO" />
+                    </h:form>
+                </div>
+            </div>
+            
+            <div class="modal" id="close">
+                <span class="modal__close">FECHAR</span>
+                <div class="modal__content">
+                    <h:form styleClass="default">
+			<h:selectOneMenu styleClass="default__select" a:required="true">
+                            <f:selectItem itemValue="" itemLabel="PARTE VENCEDORA" />
+                            <f:selectItem itemValue="#{lawsuitMB.lawsuit.promoted}" itemLabel="#{lawsuitMB.lawsuit.promoted.name}"/>
+                            <f:selectItem itemValue="#{lawsuitMB.lawsuit.promoting}" itemLabel="#{lawsuitMB.lawsuit.promoting.name}"/>
+			</h:selectOneMenu>
+                        <h:inputTextarea styleClass="default__textarea" a:placeholder="PARECER" a:required="true"></h:inputTextarea>
+                        <h:commandButton styleClass="button button--primary" action="end" value="ENCERAR PROCESSO" />
+                    </h:form>
+                </div>
+            </div>
+            
+            <div class="modal" id="phase">
+                <span class="modal__close">FECHAR</span>
+                <div class="modal__content">
+                    <h:form class="default" enctype="multipart/form-data">                    
+			<h:inputText styleClass="default__input" a:placeholder="TÍTULO" a:required="true" />
+			<h:selectOneMenu styleClass="default__select" a:required="true">
+                            <f:selectItem itemValue="" itemLabel="TIPO" />
+                            <f:selectItem itemValue="1" itemLabel="INFORMATIVA" />
+                            <f:selectItem itemValue="2" itemLabel="DELIBERATIVA" />
+			</h:selectOneMenu>
+                        <h:inputTextarea styleClass="default__textarea" a:placeholder="DESCRIÇÃO" a:required="true"></h:inputTextarea>
+                        <h:inputFile styleClass="default__file" a:data-placeholder="SELECIONAR ANEXO" />
+                        <h:commandButton styleClass="button button--primary" action="newPhase" value="NSERIR FASE" />
+                    </h:form>
+                </div>
+            </div>
+            
+        </div>
+        
+    </ui:define>
+</ui:composition>
+    
+</html>
