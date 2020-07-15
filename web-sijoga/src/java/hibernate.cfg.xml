@@ -7,6 +7,7 @@
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/sijoga?zeroDateTimeBehavior=convertToNull&amp;useSSL=false</property>
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">root</property>
+    <property name="hibernate.current_session_context_class">org.hibernate.context.internal.ThreadLocalSessionContext</property>
     <mapping class="model.Lawsuit"/>
     <mapping class="model.Phase"/>
     <mapping class="model.User"/>

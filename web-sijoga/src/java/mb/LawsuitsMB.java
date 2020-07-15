@@ -1,5 +1,6 @@
 package mb;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -15,7 +16,7 @@ import util.SessionUtil;
 
 @ManagedBean
 @ViewScoped
-public class LawsuitsMB {
+public class LawsuitsMB implements Serializable {
     private List<Lawsuit> lawsuits;
     private List<User> parts;
     private Lawsuit Lawsuit = new Lawsuit();

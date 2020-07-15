@@ -20,6 +20,7 @@ import javax.persistence.TemporalType;
 public class Lawsuit implements Serializable, LawsuitCustomMethods {
     private int id;
     private int status;
+    private String note;
     private Date createdAt;
     private User promoted;
     private User promoting;
@@ -44,6 +45,14 @@ public class Lawsuit implements Serializable, LawsuitCustomMethods {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     @Column(name="created_at")
@@ -125,7 +134,9 @@ public class Lawsuit implements Serializable, LawsuitCustomMethods {
     
     @Override
     public String currentStatus() {
-        if (this.phases.isEmpty()) {
+        if (this.status != 0) {
+            return "Finalizado";
+        } else if (this.phases.isEmpty()) {
             return "Novo";
         } else {
             if (this.phases.get(this.phases.size() - 1).getType() == 2) {

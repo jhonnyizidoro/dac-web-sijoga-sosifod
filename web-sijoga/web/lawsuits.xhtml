@@ -43,6 +43,9 @@
 			<strong class="table__strong">Criado em</strong>
                     </td>
                     <td class="table__cell">
+			<strong class="table__strong">Status</strong>
+                    </td>
+                    <td class="table__cell">
 			<strong class="table__strong">Fases</strong>
                     </td>
                     <ui:fragment rendered="#{loginMB.user.profile != 3}">
@@ -68,6 +71,9 @@
                                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
                                 </h:outputText>
                             </span>
+			</td>
+                        <td class="table__cell">
+                            <span class="table__text">#{lawsuit.currentStatus()}</span>
 			</td>
 			<td class="table__cell">
                             <span class="table__text">#{lawsuit.phases.size()}</span>
