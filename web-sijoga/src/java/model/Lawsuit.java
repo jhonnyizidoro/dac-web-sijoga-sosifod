@@ -1,5 +1,6 @@
 package model;
 
+import interfaces.LawsuitCustomMethods;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name="lawsuits")
-public class Lawsuit implements Serializable {
+public class Lawsuit implements Serializable, LawsuitCustomMethods {
     private int id;
     private int status;
     private Date createdAt;
@@ -112,6 +113,26 @@ public class Lawsuit implements Serializable {
 
     public void setPhases(List<Phase> phases) {
         this.phases = phases;
+    }
+
+    @Override
+    public Phase lastPhase() {
+        if (this.phases.size() > 0) {
+            return this.phases.get(this.phases.size() - 1);
+        }
+        return null;
+    }
+    
+    @Override
+    public String currentStatus() {
+        if (this.phases.isEmpty()) {
+            return "Novo";
+        } else {
+            if (this.phases.get(this.phases.size() - 1).getType() == 2) {
+                return "Aguardando movimentação do Juiz";
+            }
+            return "Em aberto";
+        }
     }
     
 }

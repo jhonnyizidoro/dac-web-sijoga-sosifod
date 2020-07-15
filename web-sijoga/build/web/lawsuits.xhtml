@@ -2,7 +2,8 @@
       xmlns:ui="http://java.sun.com/jsf/facelets" 
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     
 <ui:composition template="/templates/main.xhtml">
     <ui:define name="content">
@@ -13,22 +14,24 @@
             <h:form styleClass="search">
                 <div class="search__left">
                     <h:selectOneMenu styleClass="search__select">
-                        <f:selectItem itemLabel="TODOS OS PROCESSOS" itemValue="" />
-                        <f:selectItem itemLabel="PROCESSOS EM ABERTO" itemValue="" />
-                        <f:selectItem itemLabel="PROCESSOS ENCERRADOS" itemValue="" />
-                        <f:selectItem itemLabel="PROCESSOS PROMOVENTE" itemValue="" />
-                        <f:selectItem itemLabel="ROCESSOS PROMOVIDO" itemValue="" />
-                        <f:selectItem itemLabel="PROCESSOS GANHOS COMO PROMOVENTE" itemValue="" />
-                        <f:selectItem itemLabel="PROCESSOS PERDIDOS COMO PROMOVENTE" itemValue="" />
-                        <f:selectItem itemLabel="PROCESSOS GANHOS COMO PROMOVIDO" itemValue="" />
-                        <f:selectItem itemLabel="PROCESSOS PERDIDOS COMO PROMOVIDO" itemValue="" />
+                        <f:selectItem itemLabel="TODOS OS PROCESSOS" itemValue="1" />
+                        <f:selectItem itemLabel="PROCESSOS EM ABERTO" itemValue="2" />
+                        <f:selectItem itemLabel="PROCESSOS ENCERRADOS" itemValue="3" />
+                        <f:selectItem itemLabel="PROCESSOS PROMOVENTE" itemValue="4" />
+                        <f:selectItem itemLabel="ROCESSOS PROMOVIDO" itemValue="5" />
+                        <f:selectItem itemLabel="PROCESSOS GANHOS COMO PROMOVENTE" itemValue="6" />
+                        <f:selectItem itemLabel="PROCESSOS PERDIDOS COMO PROMOVENTE" itemValue="7" />
+                        <f:selectItem itemLabel="PROCESSOS GANHOS COMO PROMOVIDO" itemValue="8" />
+                        <f:selectItem itemLabel="PROCESSOS PERDIDOS COMO PROMOVIDO" itemValue="9" />
                     </h:selectOneMenu>
-                    <h:commandButton styleClass="button button--primary button--small" value="FILTRAR"/>
+                    <input class="button button--primary button--small" type="submit" value="FILTRAR" />
                 </div>
-                <div class="search__right">
-                    <button class="button button--gray button--small" type="button" data-target="part">CADASTRAR PARTE</button>
-                    <button class="button button--gray button--small" type="button" data-target="lawsuit">NOVO PROCESSO</button>
-                </div>
+                <c:if test="#{loginMB.user.profile == 2}">
+                    <div class="search__right">
+                        <button class="button button--gray button--small" type="button" data-target="part">CADASTRAR PARTE</button>
+                        <button class="button button--gray button--small" type="button" data-target="lawsuit">NOVO PROCESSO</button>
+                    </div>
+                </c:if>
             </h:form>
             
             <table class="table">
@@ -40,8 +43,13 @@
 			<strong class="table__strong">Criado em</strong>
                     </td>
                     <td class="table__cell">
-			<strong class="table__strong">Última atualização</strong>
+			<strong class="table__strong">Fases</strong>
                     </td>
+                    <ui:fragment rendered="#{loginMB.user.profile != 3}">
+                        <td class="table__cell">
+                            <strong class="table__strong">Sua participação</strong>
+                        </td>
+                    </ui:fragment>
                     <td class="table__cell">
 			<strong class="table__strong">Ações</strong>
                     </td>
@@ -50,18 +58,30 @@
                     <tr class="table__row">
 			<td class="table__cell">
                             <span class="table__text">##{lawsuit.id}</span>
-                            <span class="icon icon--warning"></span>
+                            <ui:fragment rendered="#{lawsuit.lastPhase().type == 2}">
+                                <span class="icon icon--warning"></span>
+                            </ui:fragment>
 			</td>
 			<td class="table__cell">
                             <span class="table__text">#{lawsuit.createdAt}</span>
 			</td>
 			<td class="table__cell">
-                            <span class="table__text">#{lawsuit.phases}</span>
+                            <span class="table__text">#{lawsuit.phases.size()}</span>
 			</td>
+                        <ui:fragment rendered="#{loginMB.user.profile != 3}">
+                            <td class="table__cell">
+                                <ui:fragment rendered="#{loginMB.user.id == lawsuit.promotingLawier.id || loginMB.user.id == lawsuit.promoting.id}">
+                                    <span class="table__strong">Promovente</span>
+                                </ui:fragment>
+                                <ui:fragment rendered="#{loginMB.user.id == lawsuit.promotedLawier.id || loginMB.user.id == lawsuit.promoted.id}">
+                                    <span class="table__strong">Promovido</span>
+                                </ui:fragment>
+                            </td>
+                        </ui:fragment>
 			<td class="table__cell">
-                            <h:form styleClass="table__link">
-                                <h:commandLink action="#{lawsuitMB.show(lawsuit)}" value="visualizar" />
-                            </h:form>
+                            <h:link styleClass="table__link" value="visualizar" outcome="lawsuit">
+                                <f:param name="id" value="#{lawsuit.id}" />
+                            </h:link>
 			</td>
                     </tr>
                 </ui:repeat>
@@ -90,6 +110,7 @@
 		<h:form styleClass="default">
                     <h:inputText styleClass="default__input" a:placeholder="NOME" a:required="true" value="#{lawsuitsMB.part.name}" />
                     <h:inputText styleClass="default__input" a:placeholder="CPF" a:required="true" value="#{lawsuitsMB.part.cpf}" a:data-mask="000.000.000-00" />
+                    <h:inputSecret styleClass="default__input" a:placeholder="SENHA" a:required="true" value="#{lawsuitsMB.part.password}" />
                     <h:commandButton styleClass="button button--primary" action="#{lawsuitsMB.insertPart}" value="CADASTRAR PARTE" />
 		</h:form>
             </div>

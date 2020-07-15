@@ -3,8 +3,8 @@ package mb;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import model.Lawsuit;
 import model.User;
 import org.hibernate.Query;
@@ -12,8 +12,8 @@ import org.hibernate.Session;
 import util.HibernateUtil;
 import util.SessionUtil;
 
-@Named
-@RequestScoped
+@ManagedBean
+@ViewScoped
 public class LawsuitsMB {
     private List<Lawsuit> lawsuits;
     private List<User> parts;
@@ -22,10 +22,14 @@ public class LawsuitsMB {
     
     @PostConstruct
     public void init() {
+        User currentUser = (User) SessionUtil.getItem("user");
+        
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-        Query lawsuitsQuery = session.createQuery("FROM Lawsuit");
+        Query lawsuitsQuery = session.createQuery("FROM Lawsuit WHERE promoted = :user OR promoting = :user OR promotedLawier = :user OR promotingLawier = :user OR judge = :user");
+        lawsuitsQuery.setParameter("user", currentUser);
         Query partsQuery = session.createQuery("FROM User WHERE profile = 1");
+        
         this.parts = partsQuery.list();
         this.lawsuits = lawsuitsQuery.list();
         session.getTransaction().commit();
@@ -70,6 +74,7 @@ public class LawsuitsMB {
         session.beginTransaction();
         session.save(this.part);
         session.getTransaction().commit();
+        this.init();
     }
     
     public void insertLawsuit() {
@@ -91,6 +96,7 @@ public class LawsuitsMB {
         session.save(this.Lawsuit);
         session.getTransaction().commit();
         
+        this.init();
     }
     
 }

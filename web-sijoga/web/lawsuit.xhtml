@@ -13,7 +13,7 @@
         <div class="container">
             
             <div class="lawsuit">
-                <div class="lawsuit__title">Processo #123456</div>
+                <div class="lawsuit__title">Processo ##{lawsuitMB.lawsuit.id}</div>
                 <div class="lawsuit__row">
                     <div class="lawsuit__column">
                         <strong class="lawsuit__text__strong">Promovente:</strong>
@@ -41,58 +41,74 @@
                     </div>
                     <div class="lawsuit__column">
 			<strong class="lawsuit__text__strong">Status:</strong>
-			<span class="lawsuit__text__muted">Aguardando movimentação</span>
+			<span class="lawsuit__text__muted">#{lawsuitMB.lawsuit.currentStatus()}</span>
                     </div>
 		</div>
-                <div class="lawsuit__row">
-                    <div class="lawsuit__column">
-                        <strong class="lawsuit__text__strong">Ações:</strong>
-                        <a class="lawsuit__link" href="#">aceitar pedido</a>
-                        <span class="lawsuit__link" data-target="deny">negar pedido</span>
-                        <span class="lawsuit__link" data-target="intimation">realizar uma intimação</span>
-                        <span class="lawsuit__link" data-target="close">encerrar processo</span>
-                        <span class="lawsuit__link" data-target="phase">nova fase</span>
-                    </div>
-		</div>
-            </div>
-            
-            
-            <div class="lawsuit">
-		<div class="lawsuit__title">Histórico</div>
-                <ui:repeat value="#{lawsuitMB.lawsuit.phases}" var="phase">
-                    <div class="lawsuit__block">
-                        <div class="lawsuit__subtitle">#{phase.title}</div>
-                        <div class="lawsuit__row">
-                            <div class="lawsuit__column">
-                                <strong class="lawsuit__text__strong">Data:</strong>
-                                <span class="lawsuit__text__muted">#{phase.createdAt}</span>
-                            </div>
-                            <div class="lawsuit__column">
-                                <strong class="lawsuit__text__strong">Aberto por:</strong>
-                                <span class="lawsuit__text__muted">#{phase.user.name}</span>
-                            </div>
-                            <div class="lawsuit__column">
-                                <strong class="lawsuit__text__strong">Anexo:</strong>
-                                <span class="lawsuit__link">visualizar</span>
-                            </div>
-                            <div class="lawsuit__column">
-                                <strong class="lawsuit__text__strong">Tipo:</strong>
-                                <span class="lawsuit__text__muted">deliberativa #{phase.type}</span>
-                                <c:set var="type" value="#{phase.type}"/>
-                                <span class="icon icon--warning"></span>
-                            </div>
+                <c:if test="#{loginMB.user.profile == 3 and lawsuitMB.lawsuit.lastPhase().type == 2}">
+                    <div class="lawsuit__row">
+                        <div class="lawsuit__column">
+                            <strong class="lawsuit__text__strong">Ações:</strong>
+                            <h:form styleClass="lawsuit__link">
+                                <h:commandLink action="#{lawsuitMB.acceptPhase}" value="aceitar pedido" />
+                            </h:form>
+                            <span class="lawsuit__link" data-target="deny">negar pedido</span>
+                            <span class="lawsuit__link" data-target="intimation">realizar uma intimação</span>
+                            <span class="lawsuit__link" data-target="close">encerrar processo</span>
                         </div>
-                        <div class="lawsuit__justification">#{phase.description}</div>
                     </div>
-                </ui:repeat>
+                </c:if>
+                <c:if test="#{loginMB.user.profile == 2 and lawsuitMB.lawsuit.lastPhase().type == 1}">
+                    <div class="lawsuit__row">
+                        <div class="lawsuit__column">
+                            <strong class="lawsuit__text__strong">Ações:</strong>
+                            <span class="lawsuit__link" data-target="phase">nova fase</span>
+                        </div>
+                    </div>
+                </c:if>
             </div>
+            
+            <c:if test="#{lawsuitMB.lawsuit.lastPhase() != null}">
+                <div class="lawsuit">
+                    <div class="lawsuit__title">Histórico</div>
+                    <ui:repeat value="#{lawsuitMB.lawsuit.phases}" var="phase">
+                        <div class="lawsuit__block">
+                            <div class="lawsuit__subtitle">#{phase.title}</div>
+                            <div class="lawsuit__row">
+                                <div class="lawsuit__column">
+                                    <strong class="lawsuit__text__strong">Data:</strong>
+                                    <span class="lawsuit__text__muted">#{phase.createdAt}</span>
+                                </div>
+                                <div class="lawsuit__column">
+                                    <strong class="lawsuit__text__strong">Aberto por:</strong>
+                                    <span class="lawsuit__text__muted">#{phase.user.name}</span>
+                                </div>
+                                <div class="lawsuit__column">
+                                    <strong class="lawsuit__text__strong">Anexo:</strong>
+                                    <span class="lawsuit__link">visualizar</span>
+                                </div>
+                                <div class="lawsuit__column">
+                                    <strong class="lawsuit__text__strong">Tipo:</strong>
+                                    <ui:fragment rendered="#{phase.type != 2}">
+                                        <span class="lawsuit__text__muted">informativa</span>
+                                    </ui:fragment>
+                                    <ui:fragment rendered="#{phase.type == 2}">
+                                        <span class="lawsuit__text__muted">deliberativa</span>
+                                        <span class="icon icon--warning"></span>
+                                    </ui:fragment>
+                                </div>
+                            </div>
+                            <div class="lawsuit__justification">#{phase.description}</div>
+                        </div>
+                    </ui:repeat>
+                </div>
+            </c:if>
             
             <div class="modal" id="deny">
                 <span class="modal__close">FECHAR</span>
                 <div class="modal__content">
                     <h:form styleClass="default">
-			<h:inputTextarea styleClass="default__textarea" a:placeholder="JUSTIFICATIVA" a:required="true"></h:inputTextarea>
-                        <h:commandButton styleClass="button button--primary" action="deny" value="NEGAR PEDIDO" />
+                        <h:inputTextarea styleClass="default__textarea" a:placeholder="JUSTIFICATIVA" a:required="true" value="#{lawsuitMB.phase.description}" />
+                        <h:commandButton styleClass="button button--primary" action="#{lawsuitMB.denyPhase}" value="NEGAR PEDIDO" />
                     </h:form>
                 </div>
             </div>
@@ -131,15 +147,15 @@
                 <span class="modal__close">FECHAR</span>
                 <div class="modal__content">
                     <h:form class="default" enctype="multipart/form-data">                    
-			<h:inputText styleClass="default__input" a:placeholder="TÍTULO" a:required="true" />
-			<h:selectOneMenu styleClass="default__select" a:required="true">
+                        <h:inputText styleClass="default__input" a:placeholder="TÍTULO" a:required="true" value="#{lawsuitMB.phase.title}" />
+                        <h:selectOneMenu styleClass="default__select" a:required="true" value="#{lawsuitMB.phase.type}">
                             <f:selectItem itemValue="" itemLabel="TIPO" />
                             <f:selectItem itemValue="1" itemLabel="INFORMATIVA" />
                             <f:selectItem itemValue="2" itemLabel="DELIBERATIVA" />
 			</h:selectOneMenu>
-                        <h:inputTextarea styleClass="default__textarea" a:placeholder="DESCRIÇÃO" a:required="true"></h:inputTextarea>
-                        <h:inputFile styleClass="default__file" a:data-placeholder="SELECIONAR ANEXO" />
-                        <h:commandButton styleClass="button button--primary" action="newPhase" value="NSERIR FASE" />
+                        <h:inputTextarea styleClass="default__textarea" a:placeholder="DESCRIÇÃO" a:required="true" value="#{lawsuitMB.phase.description}" />
+                        <h:inputFile styleClass="default__file" a:data-placeholder="SELECIONAR ANEXO" value="#{lawsuitMB.phase.attachment}" />
+                        <h:commandButton styleClass="button button--primary" action="#{lawsuitMB.newPhase}" value="INSERIR FASE" />
                     </h:form>
                 </div>
             </div>
