@@ -2,14 +2,12 @@ package mb;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import model.User;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import util.HashUtil;
 import util.HibernateUtil;
 import util.SessionUtil;
 
@@ -31,7 +29,7 @@ public class LoginMB implements Serializable {
         session.beginTransaction();
         Query query = session.createQuery("FROM User WHERE cpf = :cpf AND password = :password");
         query.setParameter("cpf", this.user.getCpf());
-        query.setParameter("password", this.user.getPassword());
+        query.setParameter("password", HashUtil.hash(this.user.getPassword()));
         List<User> users = query.list();
         boolean userExists = !users.isEmpty();
         session.getTransaction().commit();

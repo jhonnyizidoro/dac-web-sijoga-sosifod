@@ -1,21 +1,25 @@
 package mb;
 
 
+import java.io.Serializable;
+import java.security.MessageDigest;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import model.Intimation;
 import model.User;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import util.HashUtil;
 import util.HibernateUtil;
+import util.SessionUtil;
 
 
-@Named
-@RequestScoped
-public class IntimationsMB {
+@ManagedBean
+@ViewScoped
+public class IntimationsMB implements Serializable {
     private User officer = new User();
     private Intimation intimation = new Intimation();
     private List<Intimation> intimations;
@@ -23,10 +27,12 @@ public class IntimationsMB {
     
     @PostConstruct
     public void init() {
+        User currentUser = (User) SessionUtil.getItem("user");
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-        Query intimationsQuery = session.createQuery("FROM Intimation");
-        Query officersQuery = session.createQuery("FROM User WHERE profile = 0");
+        Query intimationsQuery = session.createQuery("FROM Intimation WHERE officer = :user");
+        intimationsQuery.setParameter("user", currentUser);
+        Query officersQuery = session.createQuery("FROM User WHERE profile = 1");
         this.intimations = intimationsQuery.list();
         this.officers = officersQuery.list();
         session.getTransaction().commit();
@@ -65,11 +71,13 @@ public class IntimationsMB {
     }
 
     public void insertOfficer() {
-        this.officer.setPassword("123456");
+        this.officer.setPassword(HashUtil.hash("123456"));
+        this.officer.setProfile(1);
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         session.save(this.officer);
         session.getTransaction().commit();
+        this.init();
     }
     
     public void insertIntimation() {
@@ -78,14 +86,16 @@ public class IntimationsMB {
         this.intimation.setCreatedAt(new Date());
         session.save(this.intimation);
         session.getTransaction().commit();
+        this.init();
     }
     
-        public void concludeIntimation(Intimation intimation) {
+    public void concludeIntimation(Intimation intimation) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         intimation.setConcludedAt(new Date());
         session.update(intimation);
         session.getTransaction().commit();
+        this.init();
     }
     
 }

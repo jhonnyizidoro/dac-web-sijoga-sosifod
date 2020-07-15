@@ -9,6 +9,7 @@ import model.Lawsuit;
 import model.User;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import util.HashUtil;
 import util.HibernateUtil;
 import util.SessionUtil;
 
@@ -68,7 +69,7 @@ public class LawsuitsMB {
     }
     
     public void insertPart() {
-        this.part.setPassword("123456");
+        this.part.setPassword(HashUtil.hash("123456"));
         this.part.setProfile(1);
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();

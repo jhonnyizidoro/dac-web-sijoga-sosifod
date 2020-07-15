@@ -63,7 +63,11 @@
                             </ui:fragment>
 			</td>
 			<td class="table__cell">
-                            <span class="table__text">#{lawsuit.createdAt}</span>
+                            <span class="table__text">
+                                <h:outputText value="#{lawsuit.createdAt}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                </h:outputText>
+                            </span>
 			</td>
 			<td class="table__cell">
                             <span class="table__text">#{lawsuit.phases.size()}</span>

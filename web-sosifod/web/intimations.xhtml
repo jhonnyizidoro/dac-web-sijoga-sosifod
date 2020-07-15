@@ -2,7 +2,8 @@
       xmlns:ui="http://java.sun.com/jsf/facelets" 
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     
 <ui:composition template="/templates/main.xhtml">
     <ui:define name="content">
@@ -12,8 +13,10 @@
                     <h:graphicImage styleClass="navbar__image" library="images" name="logo-simple.svg" />
                 </h:link>
                 <div class="navbar__links">
-                    <span class="navbar__link" data-target="intimation">NOVA INTIMAÇÃO</span>
-                    <span class="navbar__link" data-target="officer">CADASTRAR OFICIAL DE JUSTIÇA</span>
+                    <c:if test="#{loginMB.user.profile != 1}">
+                        <span class="navbar__link" data-target="intimation">NOVA INTIMAÇÃO</span>
+                        <span class="navbar__link" data-target="officer">CADASTRAR OFICIAL DE JUSTIÇA</span>
+                    </c:if>
                     <h:link styleClass="navbar__link" outcome="index">SAIR</h:link>
                 </div>
             </div>
@@ -35,13 +38,20 @@
 			<strong class="table__strong">Origem</strong>
                     </td>
                     <td class="table__cell">
+			<strong class="table__strong">Status</strong>
+                    </td>
+                    <td class="table__cell">
 			<strong class="table__strong">Ações</strong>
                     </td>
 		</tr>
                 <ui:repeat value="#{intimationsMB.intimations}" var="intimation">
                     <tr class="table__row">
                         <td class="table__cell">
-                            <span class="table__text">#{intimation.createdAt}</span>
+                            <span class="table__text">
+                                <h:outputText value="#{intimation.createdAt}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                </h:outputText>
+                            </span>
                         </td>
                         <td class="table__cell">
                             <span class="table__text">#{intimation.name}</span>
@@ -51,6 +61,19 @@
                         </td>
                         <td class="table__cell">
                             <span class="table__text">#{intimation.origin == 0 ? "SOSIFOD" : "SIJOGA"}</span>
+                        </td>
+                        <td class="table__cell">
+                            <ui:fragment rendered="#{intimation.concludedAt == null}">
+                                <span class="table__text">Pendente</span>
+                            </ui:fragment>
+                            <ui:fragment rendered="#{intimation.concludedAt!= null}">
+                                <span class="table__text">
+                                    Concluído em
+                                    <h:outputText value="#{intimation.concludedAt}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                    </h:outputText>
+                                </span>
+                            </ui:fragment>
                         </td>
                         <td class="table__cell">
                             <h:form styleClass="table__link">

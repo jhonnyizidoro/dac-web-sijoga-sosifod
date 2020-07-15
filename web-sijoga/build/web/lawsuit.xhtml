@@ -76,16 +76,22 @@
                             <div class="lawsuit__row">
                                 <div class="lawsuit__column">
                                     <strong class="lawsuit__text__strong">Data:</strong>
-                                    <span class="lawsuit__text__muted">#{phase.createdAt}</span>
+                                    <span class="lawsuit__text__muted">
+                                        <h:outputText value="#{phase.createdAt}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                        </h:outputText>
+                                    </span>
                                 </div>
                                 <div class="lawsuit__column">
                                     <strong class="lawsuit__text__strong">Aberto por:</strong>
                                     <span class="lawsuit__text__muted">#{phase.user.name}</span>
                                 </div>
-                                <div class="lawsuit__column">
-                                    <strong class="lawsuit__text__strong">Anexo:</strong>
-                                    <span class="lawsuit__link">visualizar</span>
-                                </div>
+                                <ui:fragment rendered="#{phase.attachment != null}">
+                                    <div class="lawsuit__column">
+                                        <strong class="lawsuit__text__strong">Anexo:</strong>
+                                        <span class="lawsuit__link">visualizar</span>
+                                    </div>
+                                </ui:fragment>
                                 <div class="lawsuit__column">
                                     <strong class="lawsuit__text__strong">Tipo:</strong>
                                     <ui:fragment rendered="#{phase.type != 2}">
