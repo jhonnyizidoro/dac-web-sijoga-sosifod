@@ -25,9 +25,9 @@ public class RequestUtil {
         try {
             InputStream input = file.getInputStream();
             String fileName = file.getSubmittedFileName();
-            File fileToCopy = new File("C:\\Users\\jhonn\\Documents", fileName);
+            File fileToCopy = new File("C:\\Users\\jhonn\\Documents\\NetBeansProjects\\web-sijoga\\web\\resources\\uploads", fileName);
             Files.copy(input, fileToCopy.toPath());
-            return "C:\\Users\\jhonn\\Documents\\" + fileName;
+            return fileName;
         } catch (IOException e) {
             System.out.println(e.toString());
         }

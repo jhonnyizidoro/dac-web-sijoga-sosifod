@@ -21,6 +21,7 @@ public class LawsuitsMB implements Serializable {
     private List<User> parts;
     private Lawsuit Lawsuit = new Lawsuit();
     private User part = new User();
+    private int searchType;
     
     @PostConstruct
     public void init() {
@@ -68,6 +69,14 @@ public class LawsuitsMB implements Serializable {
     public void setPart(User part) {
         this.part = part;
     }
+
+    public int getSearchType() {
+        return searchType;
+    }
+
+    public void setSearchType(int searchType) {
+        this.searchType = searchType;
+    }
     
     public void insertPart() {
         this.part.setPassword(HashUtil.hash("123456"));
@@ -99,6 +108,49 @@ public class LawsuitsMB implements Serializable {
         session.getTransaction().commit();
         
         this.init();
+    }
+    
+    public void search() {
+        String lawsuitsQueryString = "FROM Lawsuit WHERE (promoted = :user OR promoting = :user OR promotedLawier = :user OR promotingLawier = :user OR judge = :user) ";
+        
+        User currentUser = (User) SessionUtil.getItem("user");
+        
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        
+        Query lawsuitsQuery;
+        switch (this.searchType) {
+            case 1:
+                lawsuitsQuery = session.createQuery(lawsuitsQueryString);
+                lawsuitsQuery.setParameter("user", currentUser);
+                break;
+            case 2:
+                lawsuitsQuery = session.createQuery(lawsuitsQueryString + "AND status = 0");
+                lawsuitsQuery.setParameter("user", currentUser);
+                break;
+            case 3:
+                lawsuitsQuery = session.createQuery(lawsuitsQueryString + "AND status != 0");
+                lawsuitsQuery.setParameter("user", currentUser);
+                break;
+            case 4:
+            case 6:
+            case 7:
+                lawsuitsQuery = session.createQuery(lawsuitsQueryString + "AND (promoting = :user OR promotingLawier = :user)");
+                lawsuitsQuery.setParameter("user", currentUser);
+                break;
+            case 5:
+            case 8:
+            case 9:
+                lawsuitsQuery = session.createQuery(lawsuitsQueryString + "AND (promoted = :user OR promotedLawier = :user)");
+                lawsuitsQuery.setParameter("user", currentUser);
+                break;
+            default:
+                lawsuitsQuery = session.createQuery(lawsuitsQueryString);
+                lawsuitsQuery.setParameter("user", currentUser);
+        }
+        
+        this.lawsuits = lawsuitsQuery.list();
+        session.getTransaction().commit();
     }
     
 }

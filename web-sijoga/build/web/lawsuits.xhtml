@@ -13,7 +13,7 @@
         <div class="container">
             <h:form styleClass="search">
                 <div class="search__left">
-                    <h:selectOneMenu styleClass="search__select">
+                    <h:selectOneMenu styleClass="search__select" value="#{lawsuitsMB.searchType}">
                         <f:selectItem itemLabel="TODOS OS PROCESSOS" itemValue="1" />
                         <f:selectItem itemLabel="PROCESSOS EM ABERTO" itemValue="2" />
                         <f:selectItem itemLabel="PROCESSOS ENCERRADOS" itemValue="3" />
@@ -24,7 +24,7 @@
                         <f:selectItem itemLabel="PROCESSOS GANHOS COMO PROMOVIDO" itemValue="8" />
                         <f:selectItem itemLabel="PROCESSOS PERDIDOS COMO PROMOVIDO" itemValue="9" />
                     </h:selectOneMenu>
-                    <input class="button button--primary button--small" type="submit" value="FILTRAR" />
+                    <h:commandButton styleClass="button button--primary button--small" value="FILTRAR" action="#{lawsuitsMB.search}" />
                 </div>
                 <c:if test="#{loginMB.user.profile == 2}">
                     <div class="search__right">
