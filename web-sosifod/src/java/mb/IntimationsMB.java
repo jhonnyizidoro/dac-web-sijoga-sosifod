@@ -8,12 +8,16 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.MediaType;
 import model.Intimation;
 import model.User;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import util.HashUtil;
 import util.HibernateUtil;
+import util.RequestUtil;
 import util.SessionUtil;
 
 
@@ -95,6 +99,14 @@ public class IntimationsMB implements Serializable {
         intimation.setConcludedAt(new Date());
         session.update(intimation);
         session.getTransaction().commit();
+        
+        if (intimation.getOrigin() == 1) {
+            Client client = ClientBuilder.newClient();
+            String res = client.target("http://localhost:8080/web-sijoga/webresources/intimations?name=" + RequestUtil.encodeURL(intimation.getName()) + "&id=" + RequestUtil.encodeURL(intimation.getLawsuit()))
+                    .request(MediaType.TEXT_PLAIN)
+                    .get(String.class);
+        }
+        
         this.init();
     }
     
