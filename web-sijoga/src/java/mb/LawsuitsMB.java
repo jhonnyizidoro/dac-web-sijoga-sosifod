@@ -1,17 +1,22 @@
 package mb;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import model.Lawsuit;
 import model.User;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import util.HashUtil;
 import util.HibernateUtil;
+import util.RequestUtil;
 import util.SessionUtil;
 
 @ManagedBean
@@ -22,6 +27,9 @@ public class LawsuitsMB implements Serializable {
     private Lawsuit Lawsuit = new Lawsuit();
     private User part = new User();
     private int searchType;
+    private int reportStatus;
+    private String reportDateFrom;
+    private String reportDateUntil;
     
     @PostConstruct
     public void init() {
@@ -76,6 +84,30 @@ public class LawsuitsMB implements Serializable {
 
     public void setSearchType(int searchType) {
         this.searchType = searchType;
+    }
+
+    public int getReportStatus() {
+        return reportStatus;
+    }
+
+    public void setReportStatus(int reportStatus) {
+        this.reportStatus = reportStatus;
+    }
+
+    public String getReportDateFrom() {
+        return reportDateFrom;
+    }
+
+    public void setReportDateFrom(String reportDateFrom) {
+        this.reportDateFrom = reportDateFrom;
+    }
+
+    public String getReportDateUntil() {
+        return reportDateUntil;
+    }
+
+    public void setReportDateUntil(String reportDateUntil) {
+        this.reportDateUntil = reportDateUntil;
     }
     
     public void insertPart() {
@@ -151,6 +183,15 @@ public class LawsuitsMB implements Serializable {
         
         this.lawsuits = lawsuitsQuery.list();
         session.getTransaction().commit();
+    }
+    
+    public void generateReport() {
+        User currentUser = (User) SessionUtil.getItem("user");
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("report?status=" + this.reportStatus + "&user=" + currentUser.getId() + "&from=" + RequestUtil.encodeURL(this.reportDateFrom) + "&until=" + RequestUtil.encodeURL(this.reportDateUntil));
+        } catch (IOException ex) {
+            System.out.println("Erro ao redirecionar: " + ex.getMessage());
+        }
     }
     
 }

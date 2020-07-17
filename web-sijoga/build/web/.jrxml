@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.10.0.final using JasperReports Library version 6.10.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e845a21c-28d0-4fab-affd-b9d841669463">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SIJOGA"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT * FROM lawsuits]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="lawsuits"/>
+	</field>
+	<field name="created_at" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="created_at"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="lawsuits"/>
+	</field>
+	<field name="status" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="lawsuits"/>
+	</field>
+	<field name="note" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="note"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="lawsuits"/>
+	</field>
+	<field name="promoted_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="promoted_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="lawsuits"/>
+	</field>
+	<field name="promoting_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="promoting_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="lawsuits"/>
+	</field>
+	<field name="promoted_lawier_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="promoted_lawier_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="lawsuits"/>
+	</field>
+	<field name="promoting_lawier_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="promoting_lawier_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="lawsuits"/>
+	</field>
+	<field name="judge_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="judge_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="lawsuits"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="32" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="30" uuid="3fd2e869-6bf9-4564-bf2b-263477cf2812">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a3890225-b6ac-4a57-b86d-29af2cf36416"/>
+				</reportElement>
+				<text><![CDATA[id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="181" y="0" width="100" height="30" uuid="33ccebf5-9487-4b27-a1db-bfbba7da873b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bde575fe-b7a4-48c5-8f8a-c3dc1602b61e"/>
+				</reportElement>
+				<text><![CDATA[created_at]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="394" y="0" width="100" height="30" uuid="f81b638a-473b-4369-b9c0-3cbdc34af98f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61d82f34-cd33-4497-8972-a668b363c918"/>
+				</reportElement>
+				<text><![CDATA[status]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="32" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="100" height="30" uuid="405e5a13-3499-4ce1-b70c-634ac9d0000a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a3890225-b6ac-4a57-b86d-29af2cf36416"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="181" y="0" width="100" height="30" uuid="17cc9ede-c301-43e8-8782-6eb391bbb500">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bde575fe-b7a4-48c5-8f8a-c3dc1602b61e"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{created_at}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="394" y="0" width="100" height="30" uuid="1cb41935-4f9b-4b8d-850f-e60d198bdfed">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61d82f34-cd33-4497-8972-a668b363c918"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

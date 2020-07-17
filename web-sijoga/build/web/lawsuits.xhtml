@@ -102,14 +102,14 @@
             <span class="modal__close">FECHAR</span>
             <div class="modal__content">
                 <h:form styleClass="default">
-                    <h:inputText styleClass="default__input" a:placeholder="DATA INICIAL" a:data-mask="00/00/0000" />
-                    <h:inputText styleClass="default__input" a:placeholder="DATA FINAL" a:data-mask="00/00/0000" />
-                    <h:selectOneMenu styleClass="default__select">
+                    <h:inputText styleClass="default__input" a:placeholder="DATA INICIAL" a:required="true" value="#{lawsuitsMB.reportDateFrom}" a:data-mask="00/00/0000" />
+                    <h:inputText styleClass="default__input" a:placeholder="DATA FINAL" a:required="true" value="#{lawsuitsMB.reportDateUntil}" a:data-mask="00/00/0000" />
+                    <h:selectOneMenu styleClass="default__select" a:required="true" value="#{lawsuitsMB.reportStatus}">
                         <f:selectItem itemValue="" itemLabel="STATUS"/>
-                        <f:selectItem itemValue="" itemLabel="EM ABERTO"/>
-                        <f:selectItem itemValue="" itemLabel="ENCERRADO"/>
+                        <f:selectItem itemValue="0" itemLabel="EM ABERTO"/>
+                        <f:selectItem itemValue="1" itemLabel="ENCERRADO"/>
                     </h:selectOneMenu>
-                    <h:commandButton styleClass="button button--primary" action="generateReport" value="GERAR RELATÓRIO" />
+                    <h:commandButton styleClass="button button--primary" action="#{lawsuitsMB.generateReport}" value="GERAR RELATÓRIO" />
                 </h:form>
             </div>
         </div>
