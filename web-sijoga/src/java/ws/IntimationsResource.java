@@ -24,7 +24,7 @@ public class IntimationsResource {
         session.beginTransaction();
         
         Lawsuit lawsuit = (Lawsuit) session.get(Lawsuit.class, id);
-        User user = (User) session.get(User.class, 1);
+        User user = (User) session.get(User.class, 10);
         
         
         Phase intimationPhase = new Phase();

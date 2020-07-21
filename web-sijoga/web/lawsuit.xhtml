@@ -59,7 +59,7 @@
                         </div>
                     </div>
                 </c:if>
-                <c:if test="#{loginMB.user.profile == 2 and lawsuitMB.lawsuit.lastPhase().type == 1 and lawsuitMB.lawsuit.status == 0}">
+                <c:if test="#{loginMB.user.profile == 2 and (lawsuitMB.lawsuit.lastPhase() == null or lawsuitMB.lawsuit.lastPhase().type == 1) and lawsuitMB.lawsuit.status == 0}">
                     <div class="lawsuit__row">
                         <div class="lawsuit__column">
                             <strong class="lawsuit__text__strong">Ações:</strong>

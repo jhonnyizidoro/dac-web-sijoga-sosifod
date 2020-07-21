@@ -193,7 +193,7 @@ public class LawsuitMB implements Serializable {
         
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.update(currentLawsuit);
+        session.merge(currentLawsuit);
         session.getTransaction().commit();
         return "lawsuits";
     }

@@ -130,7 +130,7 @@ public class LawsuitsMB implements Serializable {
         Query promotedLawierQuery = session.createQuery("FROM User WHERE profile = 2 AND id <> :id");
         Query judgeQuery = session.createQuery("FROM User WHERE profile = 3");
         promotedLawierQuery.setParameter("id", promotingLawier.getId());
-        
+              
         User promotedLawier = (User) promotedLawierQuery.list().get(0);
         User judge = (User) judgeQuery.list().get(0);
         this.Lawsuit.setPromotedLawier(promotedLawier);
